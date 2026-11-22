@@ -100,18 +100,25 @@ canvas{margin:6px 0 4px}
 <main>
 <section class="left">
   <div class="scene" id="scene"><div class="k">Today with Saathi</div><h3>Ramesh's whole day, protected</h3><div class="ba"><div class="b"><small>Before</small>Doubts every "ho gaya bhaiya", chases udhaar, never knows his hisab.</div><div class="a"><small>With Saathi</small>1 fraud blocked, ₹525 saved, udhaar recovered, hisab in 30 seconds.</div></div></div>
-  <div class="sb">
-    <div class="shadow"></div>
-    <div class="lcd" id="lcd">READY</div><div class="body"><div class="grille"></div></div>
+  <style>
+  .sb2{position:relative;width:476px;height:458px;margin:10px 0 -10px;transform:scale(1.12);transform-origin:50% 40%}
+  .sb2 .dev{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 28px 26px #0f172a30);user-select:none;pointer-events:none}
+  .sb2 .lcd{left:178px;top:72px;width:220px;height:24px;font-size:10px}
+  .sb2 .led{left:186px;right:auto;width:212px;top:331px;bottom:auto;height:7px;z-index:2}
+  .sb2 .mic{left:124px;top:244px;width:46px;height:46px;border:3px solid #ffffff55}
+  .sb2 .miclabel{left:106px;top:294px;color:#e2e8f0;font-size:9.5px}
+  .sb2 .keypad{inset:auto;left:180px;top:136px;width:222px;height:186px;border-radius:12px}
+  .sb2 .keys{grid-template-columns:repeat(3,44px);gap:5px}.sb2 .keys button{height:30px;font-size:15px;border-radius:9px}
+  .sb2 .dots{height:20px;margin:4px 0}
+  </style>
+  <div class="sb2">
+    <img class="dev" src="soundbox.png" alt="Paytm Soundbox">
+    <div class="lcd" id="lcd">READY</div>
+    <div class="led" id="led"></div>
     <button class="mic" id="mic" title="Hold to talk (or hold Space)"><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg></button>
     <div class="miclabel">Hold to talk</div>
-    <div class="face"><div class="inner">
-      <div class="card"><div class="logo">Pay<i>tm</i></div><div class="t1">Accepted Here</div><div class="t2">Scan &amp; Pay using any UPI App</div>
-        <canvas id="qr" width="150" height="150" style="width:150px;height:150px"></canvas>
-        <div class="t2">UPI ID: ramesh.kirana@paytm</div><div class="bhim">BHIM | <span>UPI</span></div></div>
-      <div class="keypad" id="keypad"><div class="kt">Owner PIN</div><div class="dots" id="dots"></div><div class="keys" id="keys"></div></div>
-      <div class="led" id="led"></div>
-    </div></div>
+    <div class="keypad" id="keypad"><div class="kt">Owner PIN</div><div class="dots" id="dots"></div><div class="keys" id="keys"></div></div>
+    <canvas id="qr" width="150" height="150" hidden></canvas>
   </div>
   <div class="convo" id="convo"></div>
 </section>
