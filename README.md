@@ -9,7 +9,18 @@
 ![Built with Claude](https://img.shields.io/badge/Built%20with-Claude-D97757?style=for-the-badge)
 ![Voice: Sarvam Bulbul](https://img.shields.io/badge/Voice-Sarvam%20Bulbul%20v3-6C47FF?style=for-the-badge)
 
-<img src="docs/screenshot.png" alt="Paytm AI Saathi demo" width="720">
+<img src="docs/hero.png" alt="Paytm AI Saathi: Ramesh's day, protected" width="860">
+
+<table>
+<tr>
+<td align="center"><img src="docs/rush.png" width="420"><br><b>Rush hour</b> · said vs paid, ₹525 saved</td>
+<td align="center"><img src="docs/fraud.png" width="420"><br><b>Fraud shield</b> · fake "Paytm Support" blocked</td>
+</tr>
+<tr>
+<td align="center"><img src="docs/pin.png" width="420"><br><b>Owner lock</b> · shuffled PIN, public sees last 3 only</td>
+<td align="center"><img src="docs/credit.png" width="420"><br><b>Fair credit</b> · total cost + affordability, vs sahukar</td>
+</tr>
+</table>
 
 </div>
 

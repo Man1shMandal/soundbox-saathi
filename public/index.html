@@ -106,7 +106,7 @@ canvas{margin:6px 0 4px}
   .sb2 .lcd{left:178px;top:72px;width:220px;height:24px;font-size:10px}
   .sb2 .led{left:186px;right:auto;width:212px;top:331px;bottom:auto;height:7px;z-index:2}
   .sb2 .mic{left:124px;top:244px;width:46px;height:46px;border:3px solid #ffffff55}
-  .sb2 .miclabel{left:106px;top:294px;color:#e2e8f0;font-size:9.5px}
+  .sb2 .miclabel{left:110px;top:296px;width:74px;color:#fff;font-size:9.5px;background:#0b1f3fd9;border-radius:6px;padding:2px 0}
   .sb2 .keypad{inset:auto;left:180px;top:136px;width:222px;height:186px;border-radius:12px}
   .sb2 .keys{grid-template-columns:repeat(3,44px);gap:5px}.sb2 .keys button{height:30px;font-size:15px;border-radius:9px}
   .sb2 .dots{height:20px;margin:4px 0}
@@ -230,9 +230,22 @@ function setScene(i){const s=SC[i];if(!s)return;$('scene').outerHTML=`<div class
 $('chips').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=b.dataset.i;if(i==='r')return reset();clearShowcase();setScene(+i);const c=CH[i];typeof c[1]==='function'?c[1]():send(c[1])};
 
 // Boot-up showcase: what Saathi did today (clears on first demo step)
+// Static screenshot mode: ?shot=hero|rush|fraud|pin|credit
+const SHOT=new URLSearchParams(location.search).get('shot');
+if(SHOT){const st=document.createElement('style');st.textContent='*,*:before{animation:none!important;transition:none!important}';document.head.append(st)}
+const OFFERS=[{amt:25000,daily:140,days:200,total:28000,pct:6.4,ok:true},{amt:50000,daily:280,days:200,total:56000,pct:12.7,ok:false}];
+function shot(m){
+  if(m==='rush'){setScene(0);render({type:'bills'});$('bills').innerHTML=`<div class="row hg"><span><span class="dot ok"></span>Said "540"</span><span>₹540 · Rahul S.</span></div><div class="row hb"><span><span class="dot bad"></span>Said "120"</span><span>not received</span></div><div class="row hl"><span><span class="dot warn"></span>Said "450"</span><span>only ₹45</span></div><div class="row hg"><span><span class="dot ok"></span>Said "200"</span><span>₹200 · Vikas K.</span></div><div class="row hl"><span><span class="dot warn"></span>Vikas K. paid again</span><span>₹200 held</span></div><div class="row tot"><span>Saved this rush</span><span>₹525</span></div>`;
+    render({type:'last3',data:[{amt:200,who:'Vikas K.',t:'1:06 PM'},{amt:200,who:'Vikas K.',t:'1:06 PM'},{amt:45,who:'Anil M.',t:'1:05 PM'}]});feed.prepend(feed.lastChild);
+    line('120 hua. — "Ho gaya bhaiya" (shows screenshot)',true);line('₹120 abhi tak nahi aaya!');line('450 bola, 45 aaye. ₹405 kam!');led('red');lcd('₹405 SHORT · BILL 3')}
+  if(m==='fraud'){setScene(3);render({type:'alert',data:{id:'paytm.support.help@ybl'}});line('Ye message aaya hai, kya karun?',true);line('Ye FRAUD hai! Paytm kabhi PIN ya refund nahi maangta. Paisa safe hai. 1930 pe report karein.');led('red');lcd('FRAUD BLOCKED')}
+  if(m==='pin'){setScene(2);render({type:'last3',data:[{amt:200,who:'Vikas K.',t:'1:06 PM'},{amt:200,who:'Vikas K.',t:'1:06 PM'},{amt:45,who:'Anil M.',t:'1:05 PM'}]});line('Aaj kitna kamaya?',true);line('Ye sirf maalik dekh sakte hain. Pichhle 3 payment: ₹200, ₹200, ₹45.');askPin('unlock');pin='12';dots();led('amber');lcd('PIN DAALIYE')}
+  if(m==='credit'){setScene(5);unlockUI(true);render({type:'compare',data:{apr:22}});render({type:'offers',data:OFFERS});feed.prepend(feed.lastChild);line('Diwali ke liye maal lena hai, paise kam hain.',true);line('Diwali stock ke liye do options app mein hain. ₹25,000 wala aapke liye aaraam ka hai.');led('green');lcd('2 OFFERS · TOTAL COST SHOWN')}
+}
 (async function boot(){
   showcase=true;
-  for(const [c,t] of [['amber','BOOTING AI SAATHI'],['red','LOADING FRAUD SHIELD'],['green','LEDGER SYNCED'],['','READY · RAMESH KIRANA']]){led(c);lcd(t);await sleep(450)}
+  if(SHOT&&SHOT!=='hero'){showcase=false;return shot(SHOT)}
+  if(!SHOT)for(const [c,t] of [['amber','BOOTING AI SAATHI'],['red','LOADING FRAUD SHIELD'],['green','LEDGER SYNCED'],['','READY · RAMESH KIRANA']]){led(c);lcd(t);await sleep(450)}
   if(!showcase)return;
   render({type:'offers',data:[{amt:25000,daily:140,days:200,total:28000,pct:6.4,ok:true},{amt:50000,daily:280,days:200,total:56000,pct:12.7,ok:false}]});
   render({type:'khata',data:{total:4750,list:[{name:'Sharma ji',amt:1450,days:21,paid:true},{name:'Gupta ji',amt:2300,days:12},{name:'Meena didi',amt:1800,days:8},{name:'Raju',amt:650,days:5}]}});
