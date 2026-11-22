@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🔊 Soundbox Saathi
+# 🔊 Paytm AI Saathi
 ### the next-gen Paytm Soundbox
 
 **Soundbox tells you what you earned. Saathi protects it.**
@@ -9,7 +9,7 @@
 ![Built with Claude](https://img.shields.io/badge/Built%20with-Claude-D97757?style=for-the-badge)
 ![Voice: Sarvam Bulbul](https://img.shields.io/badge/Voice-Sarvam%20Bulbul%20v3-6C47FF?style=for-the-badge)
 
-<img src="docs/screenshot.png" alt="Soundbox Saathi demo" width="720">
+<img src="docs/screenshot.png" alt="Paytm AI Saathi demo" width="720">
 
 </div>
 
