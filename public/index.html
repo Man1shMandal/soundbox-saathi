@@ -104,9 +104,17 @@ canvas{margin:6px 0 4px}
   .sb2{position:relative;width:476px;height:458px;margin:10px 0 -10px;transform:scale(1.12);transform-origin:50% 40%}
   .sb2 .dev{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 28px 26px #0f172a30);user-select:none;pointer-events:none}
   .sb2 .lcd{left:178px;top:72px;width:220px;height:24px;font-size:10px}
-  .sb2 .led{left:186px;right:auto;width:212px;top:331px;bottom:auto;height:7px;z-index:2}
-  .sb2 .mic{left:124px;top:244px;width:46px;height:46px;border:3px solid #ffffff55}
-  .sb2 .miclabel{left:110px;top:296px;width:74px;color:#fff;font-size:9.5px;background:#0b1f3fd9;border-radius:6px;padding:2px 0}
+  /* LED: a light-pipe built into the navy band, invisible when off */
+  .sb2 .led{left:196px;right:auto;width:192px;top:333px;bottom:auto;height:4px;border-radius:4px;z-index:2;background:transparent;box-shadow:none;mix-blend-mode:screen;transition:background .3s,box-shadow .3s,opacity .3s}
+  .sb2 .led.green{background:linear-gradient(90deg,transparent,#4ade80 18%,#dcfce7 50%,#4ade80 82%,transparent);box-shadow:0 0 8px 2px #22c55e99,0 0 24px 6px #22c55e40}
+  .sb2 .led.amber{background:linear-gradient(90deg,transparent,#fbbf24 18%,#fef3c7 50%,#fbbf24 82%,transparent);box-shadow:0 0 8px 2px #f59e0b99,0 0 24px 6px #f59e0b40}
+  .sb2 .led.red{background:linear-gradient(90deg,transparent,#f87171 18%,#fee2e2 50%,#f87171 82%,transparent);box-shadow:0 0 8px 2px #ef4444aa,0 0 26px 8px #ef444450}
+  /* Mic: a recessed physical button moulded into the body's side */
+  .sb2 .mic{left:126px;top:262px;width:34px;height:34px;border:0;background:radial-gradient(circle at 40% 32%,#6283ad,#33557f 60%,#24426a);box-shadow:inset 0 2px 3px #00000066,inset 0 -1px 1px #ffffff2e,0 1px 0 #ffffff22;transform:skewY(-6deg)}
+  .sb2 .mic svg{width:14px;height:14px;fill:#c7d7ec;opacity:.85}
+  .sb2 .mic.on{background:radial-gradient(circle at 40% 32%,#6283ad,#33557f 60%,#24426a);box-shadow:inset 0 2px 3px #00000066,0 0 0 3px #00B9F166,0 0 16px 4px #00B9F188}
+  .sb2 .mic.on svg{fill:#7dd3fc;opacity:1}
+  .sb2 .miclabel{left:118px;top:300px;width:50px;color:#a9bfdc;font-size:7.5px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;text-shadow:0 1px 0 #00000055;background:none;transform:skewY(-6deg)}
   .sb2 .keypad{inset:auto;left:180px;top:136px;width:222px;height:186px;border-radius:12px}
   .sb2 .keys{grid-template-columns:repeat(3,44px);gap:5px}.sb2 .keys button{height:30px;font-size:15px;border-radius:9px}
   .sb2 .dots{height:20px;margin:4px 0}
@@ -116,7 +124,7 @@ canvas{margin:6px 0 4px}
     <div class="lcd" id="lcd">READY</div>
     <div class="led" id="led"></div>
     <button class="mic" id="mic" title="Hold to talk (or hold Space)"><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg></button>
-    <div class="miclabel">Hold to talk</div>
+    <div class="miclabel">Talk</div>
     <div class="keypad" id="keypad"><div class="kt">Owner PIN</div><div class="dots" id="dots"></div><div class="keys" id="keys"></div></div>
     <canvas id="qr" width="150" height="150" hidden></canvas>
   </div>
