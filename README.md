@@ -111,6 +111,46 @@ flowchart LR
 
 ---
 
+## From demo to real device: ESP32
+
+The Soundbox is already a small connected speaker. Adding Saathi needs only a mic, a button, an LED strip and the same server this repo runs.
+
+| Part | Example | Role |
+|---|---|---|
+| MCU | **ESP32-S3** (Wi-Fi, PSRAM) + 4G module (e.g. SIM7600 / EC200U) | Brain, network |
+| Mic | **INMP441** I2S MEMS mic | Hold-to-talk, spoken prices for "Bola vs Mila" |
+| Speaker | **MAX98357A** I2S amp + 3W speaker | Hindi voice + payment chimes |
+| Status | **WS2812** RGB LED strip | Green paid · amber PIN/waiting · red fraud |
+| Input | Push button + 4-key capacitive touch | Talk button, owner PIN |
+| Display (optional) | 1.3" OLED | Last 3 payments, "PIN daaliye" |
+
+**Rough BOM:** about ₹1,200–1,800 at hobby prices; less at Soundbox scale.
+
+```mermaid
+flowchart LR
+  B[Button / spoken price] --> M[INMP441 mic]
+  M -->|16 kHz PCM over I2S| E[ESP32-S3]
+  E -->|audio stream, 4G/Wi-Fi| S[Saathi server]
+  S --> STT[Speech-to-text<br/>e.g. Sarvam]
+  STT --> A[Agent + policy gate + ledger tools]
+  A --> T[Sarvam Bulbul TTS]
+  T -->|audio| E --> SP[MAX98357A speaker]
+  P[Payment events<br/>existing Soundbox push] --> E
+  E --> L[WS2812 LEDs]
+```
+
+**How it works on the device**
+1. Hold the button → ESP32 records 16 kHz audio from the I2S mic and streams it to the server.
+2. The server runs the *same* agent as this demo: speech-to-text, tools, PIN and policy checks, then Hindi TTS.
+3. Audio streams back to the I2S speaker; the LED strip shows the result.
+4. Payment notifications arrive the way Soundboxes receive them today. Bill matching runs on the server (or on the ESP32 for zero-latency alerts).
+5. The PIN is typed on the touch keys, verified server-side, and never spoken.
+6. Optional: on-device wake word with Espressif's ESP-SR so Saathi can speak first at closing time.
+
+Nothing in the agent changes: the web Soundbox in this repo is a stand-in for the ESP32 client.
+
+---
+
 ## Judging rubric
 
 | Criterion | Pts | How Saathi scores |
