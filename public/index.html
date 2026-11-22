@@ -18,7 +18,7 @@ main{display:flex;justify-content:center;align-items:flex-start;gap:72px;padding
 .body{position:absolute;left:20px;top:78px;width:320px;height:300px;border-radius:44px 28px 36px 40px;background:linear-gradient(165deg,#4f72a0 0%,#2c4f7d 50%,#1d3a63 100%)}
 .body:before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg,#ffffff14,transparent 40%)}
 .grille{position:absolute;left:34px;top:120px;width:72px;height:96px;background:radial-gradient(circle,#15304f 2px,transparent 2.4px) 0 0/11px 11px}
-.lcd{position:absolute;left:34px;top:26px;width:200px;height:28px;border-radius:6px;background:#0b1622;color:#7dd3fc;font:500 11px ui-monospace,Menlo,monospace;letter-spacing:.8px;display:flex;align-items:center;padding:0 10px;overflow:hidden;white-space:nowrap}
+.lcd{position:absolute;left:150px;top:0;width:260px;height:26px;justify-content:center;z-index:2;border-radius:6px;background:#0b1622;color:#7dd3fc;font:500 11px ui-monospace,Menlo,monospace;letter-spacing:.8px;display:flex;align-items:center;padding:0 10px;overflow:hidden;white-space:nowrap}
 .mic{position:absolute;left:38px;top:300px;width:56px;height:56px;border-radius:50%;border:0;background:#0b1f3f;cursor:pointer;display:grid;place-items:center;box-shadow:0 1px 0 #ffffff22 inset,0 6px 14px #0b1f3f55;transition:.15s;z-index:3}
 .mic svg{width:22px;height:22px;fill:#fff}
 .mic.on{background:var(--bad);box-shadow:0 0 0 10px #dc262622}
@@ -39,6 +39,13 @@ canvas{margin:6px 0 4px}
 .keys{display:grid;grid-template-columns:repeat(3,56px);gap:8px}
 .keys button{height:44px;border-radius:50%;border:1px solid #ffffff33;background:transparent;color:#fff;font-size:18px;font-weight:500;cursor:pointer}.keys button:hover{background:#ffffff1a}
 .convo{width:460px;margin-top:8px;min-height:110px}
+.scene{width:520px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 18px;animation:in .3s ease}
+.scene .k{font-size:11px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--cy)}
+.scene h3{margin:4px 0 10px;font-size:18px;letter-spacing:-.3px}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px;line-height:1.45}
+.ba div{border-radius:10px;padding:10px 12px}.ba .b{background:#FEF2F2;color:#7F1D1D}.ba .a{background:#F0FDF4;color:#14532D}
+.ba small{display:block;font-size:10.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-bottom:3px;opacity:.75}
+.step.on{border-color:var(--nv);background:var(--nv);color:#fff}.step.on b{color:#93C5FD}
 .line{display:flex;gap:10px;margin:10px 0;font-size:15px;line-height:1.45;animation:in .25s ease}
 .line .who{flex:0 0 70px;font-size:12px;color:var(--mut);padding-top:2px}
 .line.ai .txt{color:var(--nv);font-weight:500}
@@ -92,9 +99,10 @@ canvas{margin:6px 0 4px}
 </div>
 <main>
 <section class="left">
+  <div class="scene" id="scene"><div class="k">Today with Saathi</div><h3>Ramesh's whole day, protected</h3><div class="ba"><div class="b"><small>Before</small>Doubts every "ho gaya bhaiya", chases udhaar, never knows his hisab.</div><div class="a"><small>With Saathi</small>1 fraud blocked, ₹525 saved, udhaar recovered, hisab in 30 seconds.</div></div></div>
   <div class="sb">
     <div class="shadow"></div>
-    <div class="body"><div class="lcd" id="lcd">READY</div><div class="grille"></div></div>
+    <div class="lcd" id="lcd">READY</div><div class="body"><div class="grille"></div></div>
     <button class="mic" id="mic" title="Hold to talk (or hold Space)"><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2z"/></svg></button>
     <div class="miclabel">Hold to talk</div>
     <div class="face"><div class="inner">
@@ -197,7 +205,37 @@ async function reset(){await post('/api/reset',{});location.reload()}
 
 const CH=[['Rush hour',rush],['Aaya kya?','Aaya kya?'],['Kitna kamaya?','Aaj kitna kamaya?'],['Scam message',scam],['Udhaar','Sharma ji ka udhaar kitna hai? Reminder bhej do.'],['Diwali credit','Diwali ke liye maal lena hai, paise kam hain.'],['Sahukar?','Sahukar se sasta hai kya?'],['9 PM',closing],['Hisab','Haan, aaj ka hisab batao'],['Refund','Duplicate wala wapas kar do']];
 $('chips').innerHTML='<span class="lbl">Demo</span>'+CH.map((c,i)=>`<button class="step" data-i="${i}" title="${typeof c[1]==='string'?c[1]:''}"><b>${i+1}</b>${c[0]}</button>`).join('')+'<button class="step" data-i="r" style="margin-left:auto">Reset</button>';
-$('chips').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=b.dataset.i;if(i==='r')return reset();const c=CH[i];typeof c[1]==='function'?c[1]():send(c[1])};
+let showcase=false;
+const clearShowcase=()=>{if(!showcase)return;showcase=false;feed.innerHTML='';$('convo').innerHTML='';fraud=0;$('t2').textContent='0';led('');lcd('READY')};
+const SC=[
+ ['Rush hour','Said vs paid','Trusts the customer\'s screen. Fake screenshots and short payments slip through in the rush.','Every payment is matched to the price he said. Fakes, short payments and duplicates caught instantly.'],
+ ['Rush hour','"Aaya kya?" in one word','Has to unlock his phone and scroll while customers wait.','One word, one second: yes or no, straight from the ledger.'],
+ ['Owner lock','Only the owner sees the money','Anyone at the counter can see totals or press buttons.','Public sees only the last 3 payments. Everything else needs Ramesh\'s PIN.'],
+ ['Fraud shield','Fake "Paytm Support" scam','Scared by an official-sounding call, might share PIN or send money.','Scam called out instantly. Refunds can\'t go to strangers. Scammer remembered.'],
+ ['Udhaar','Credit recovered without awkwardness','Notebook full of names, too embarrassed to ask.','Saathi sends a polite UPI reminder. The Soundbox announces when it\'s paid.'],
+ ['Fair credit','Credit at the right moment','Short of cash before Diwali. The moneylender charges 5% a month.','Pre-approved options with total cost and an affordability check. Never pushed.'],
+ ['Fair credit','Explained, with sources','Doesn\'t know what a loan really costs.','Moneylender 60% a year vs this offer ~22%, computed in code, with the source named.'],
+ ['Closing hisab','Saathi speaks first','Closes the shop not knowing where the money went.','At 9 PM the Soundbox offers the day\'s hisab on its own.'],
+ ['Closing hisab','The day in 30 seconds','₹800 short, no idea why.','Every rupee explained, problems flagged, ledger verified.'],
+ ['Safe refund','Money moves only the right way','Afraid of pressing the wrong button.','PIN step-up, refund only to the original payer, never twice.']];
+function setScene(i){const s=SC[i];if(!s)return;$('scene').outerHTML=`<div class="scene" id="scene"><div class="k">${i+1} · ${s[0]}</div><h3>${s[1]}</h3><div class="ba"><div class="b"><small>Before</small>${s[2]}</div><div class="a"><small>With Saathi</small>${s[3]}</div></div></div>`;
+ document.querySelectorAll('.step').forEach(b=>b.classList.toggle('on',b.dataset.i==String(i)))}
+$('chips').onclick=e=>{const b=e.target.closest('button');if(!b)return;const i=b.dataset.i;if(i==='r')return reset();clearShowcase();setScene(+i);const c=CH[i];typeof c[1]==='function'?c[1]():send(c[1])};
+
+// Boot-up showcase: what Saathi did today (clears on first demo step)
+(async function boot(){
+  showcase=true;
+  for(const [c,t] of [['amber','BOOTING AI SAATHI'],['red','LOADING FRAUD SHIELD'],['green','LEDGER SYNCED'],['','READY · RAMESH KIRANA']]){led(c);lcd(t);await sleep(450)}
+  if(!showcase)return;
+  render({type:'offers',data:[{amt:25000,daily:140,days:200,total:28000,pct:6.4,ok:true},{amt:50000,daily:280,days:200,total:56000,pct:12.7,ok:false}]});
+  render({type:'khata',data:{total:4750,list:[{name:'Sharma ji',amt:1450,days:21,paid:true},{name:'Gupta ji',amt:2300,days:12},{name:'Meena didi',amt:1800,days:8},{name:'Raju',amt:650,days:5}]}});
+  render({type:'alert',data:{id:'paytm.support.help@ybl'}});
+  render({type:'sheet',alerts:true,data:{gross:18450,count:62,net:17250,deductions:[{label:'Refund (TXN-07)',amt:650},{label:'Chargeback hold',amt:450},{label:'Soundbox kiraya',amt:100}]}});
+  line('Aaj ka hisab batao',true);
+  line('Aaj ₹18,450 aaye. 1 fraud roka, ₹525 bachaye, Sharma ji ka udhaar wapas aaya.');
+  led('green');lcd('TODAY: ₹525 SAVED · 1 FRAUD BLOCKED');
+  trc([{k:'plan',t:'boot: showing today\'s highlights. Press any demo step to start live.'}]);
+})();
 
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec,heard='';
 function micOn(){if(!SR)return alert('Use Chrome for voice');AC.resume();heard='';rec=new SR();rec.lang='hi-IN';rec.interimResults=true;rec.onresult=e=>{heard=[...e.results].map(r=>r[0].transcript).join('');lcd(heard)};rec.start();$('mic').classList.add('on');led('amber')}
