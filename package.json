@@ -1,0 +1,1 @@
+{"name":"saathi","type":"module","scripts":{"start":"node server.js"},"dependencies":{"@anthropic-ai/sdk":"latest","express":"^4.21.2","dotenv":"^16.4.7"}}
